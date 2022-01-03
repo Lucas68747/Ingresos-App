@@ -71,7 +71,7 @@ def cleanfields():
 
 # App Info
 
-def message():
+def messageApp():
     about='''
     Tabla de Ingresos para Datos
     Versión 1.0
@@ -122,5 +122,88 @@ tree.column('#4', width=110)
 tree.heading('#4', text="Particular", anchor=CENTER)
 tree.column('#5', width=110)
 tree.heading('#5', text="Destino", anchor=CENTER)
+
+def update():
+    miConection=sqlite3.connect("Ingresos")
+    miCursor=miConection.cursor()
+    try:
+        data=miDate.get(),miHour.get(), miDomain.get(), miBusiness.get(), miParticular.get(), miDestination.get()
+        miCursor.execute("UPDATE datos SET DATE=?, HOUR=?, DOMAIN=?, BUSINESS=?, PARTICULAR=?, DESTINATION=?", (data))
+        miConection.commit()
+    except:
+        messagebox.showwarning("Advertencia", "Ocurrió un error al actualizar el registro")
+        pass
+    cleanfields()
+    show()
+
+def delete():
+    miConection=sqlite3.connect("Ingresos")
+    miCursor=miConection.cursor()
+    try:
+        if messagebox.askyesno(message="¿Realmente desea eliminar el registro?", title="Advertencia"):
+            miCursor.execute("DELETE FROM datos")
+    except:
+        messagebox.showwarning("Advertencia","Ocurrió un error al tratar de eliminar el registro")
+    cleanfields()
+    show()            
+
+########## INTERFACE ELEMENTS ##########
+
+# Menu 1
+
+menubar=Menu(root)
+menubasedat=Menu(menubar, tearoff=0)
+menubasedat.add_command(label="Crear/Conectar base de datos", command=conectionDB)
+menubasedat.add_command(label="Eliminar base de datos", command=deleteDB)
+menubasedat.add_command(label="Salir", command=exitApp)
+menubar.add_cascade(label="Inicio", menu=menubasedat)
+
+# Help Menu
+
+helpmenu=Menu(menubar, tearoff=0)
+helpmenu.add_command(label="Limpiar campos", command=cleanfields)
+helpmenu.add_command(label="Acerca de", command=messageApp)
+menubar.add_cascade(label="Ayuda", menu=helpmenu)
+
+# Entry boxes
+
+E1=Entry(root, textvariable=miDate)
+L2=Label(root, text="Fecha")
+L2.place(x=50,y=10)
+E2=Entry(root, textvariable=miDate, width=10)
+E2.place(x=100, y=10)
+
+L3=Label(root, text="Hora")
+L3.place(x=50,y=40)
+E3=Entry(root, textvariable=miHour, width=10)
+E3.place(x=100, y=40)
+
+L4=Label(root, text="Dominio")
+L4.place(x=40,y=70)
+E4=Entry(root, textvariable=miDomain, width=10)
+E4.place(x=100, y=70)
+
+L5=Label(root, text="Empresa")
+L5.place(x=200,y=10)
+E5=Entry(root, textvariable=miBusiness, width=20)
+E5.place(x=280, y=10)
+
+L6=Label(root, text="Particular")
+L6.place(x=200,y=40)
+E6=Entry(root, textvariable=miBusiness, width=20)
+E6.place(x=280, y=40)
+
+L7=Label(root, text="Destino")
+L7.place(x=200,y=70)
+E7=Entry(root, textvariable=miBusiness, width=20)
+E7.place(x=280, y=70)
+
+
+
+
+
+root.config(menu=menubar)
+
+
 
 root.mainloop()
